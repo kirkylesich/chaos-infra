@@ -55,7 +55,7 @@ module "vpc" {
 
   public_subnet_tags = {
     "kubernetes.io/role/elb" = "1"
-  } 
+  }
 
   private_subnet_tags = {
     "kubernetes.io/role/internal-elb" = "1"
@@ -75,8 +75,8 @@ module "eks" {
   vpc_id          = module.vpc.vpc_id
   subnet_ids      = module.vpc.private_subnets
 
-  cluster_endpoint_public_access = true
-  enable_irsa                    = true
+  cluster_endpoint_public_access           = true
+  enable_irsa                              = true
   enable_cluster_creator_admin_permissions = true
 
   cluster_addons = {
@@ -93,14 +93,14 @@ module "eks" {
 
   eks_managed_node_groups = {
     ng = {
-      name                = "ng-1"
-      instance_types      = ["t3.large"]
-      desired_size        = 1
-      min_size            = 1
-      max_size            = 1
-      capacity_type       = "ON_DEMAND"
-      subnet_ids          = module.vpc.private_subnets
-      ami_type            = "AL2023_x86_64_STANDARD"
+      name           = "ng-1"
+      instance_types = ["t3.large"]
+      desired_size   = 1
+      min_size       = 1
+      max_size       = 1
+      capacity_type  = "ON_DEMAND"
+      subnet_ids     = module.vpc.private_subnets
+      ami_type       = "AL2023_x86_64_STANDARD"
     }
   }
 }
@@ -109,8 +109,8 @@ module "ebs_csi_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.0"
 
-  role_name               = "${local.name}-ebs-csi-irsa"
-  attach_ebs_csi_policy   = true
+  role_name             = "${local.name}-ebs-csi-irsa"
+  attach_ebs_csi_policy = true
   oidc_providers = {
     eks = {
       provider_arn = module.eks.oidc_provider_arn
@@ -127,16 +127,16 @@ resource "aws_eks_addon" "ebs_csi" {
   service_account_role_arn    = module.ebs_csi_irsa.iam_role_arn
   resolve_conflicts_on_create = "OVERWRITE"
   resolve_conflicts_on_update = "OVERWRITE"
-  depends_on = [module.eks, module.ebs_csi_irsa]
+  depends_on                  = [module.eks, module.ebs_csi_irsa]
 }
 
 data "aws_eks_cluster" "this" {
-  name = module.eks.cluster_name
+  name       = module.eks.cluster_name
   depends_on = [module.eks]
 }
 
 data "aws_eks_cluster_auth" "this" {
-  name = module.eks.cluster_name
+  name       = module.eks.cluster_name
   depends_on = [module.eks]
 }
 
