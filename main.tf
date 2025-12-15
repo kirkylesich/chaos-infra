@@ -95,9 +95,9 @@ module "eks" {
     ng = {
       name           = "ng-1"
       instance_types = ["t3.large"]
-      desired_size   = 1
-      min_size       = 1
-      max_size       = 1
+      desired_size   = 3
+      min_size       = 3
+      max_size       = 3
       capacity_type  = "ON_DEMAND"
       subnet_ids     = module.vpc.private_subnets
       ami_type       = "AL2023_x86_64_STANDARD"
